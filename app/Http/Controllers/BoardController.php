@@ -30,6 +30,34 @@ class BoardController extends Controller
         return back();
     }
 
+    public function edit(Board $board) {
+        // $this->authorize('view', $project);
+        // if(auth()->user()->can('view', $post)) {
+
+        // }
+        return view('boards.edit', ['board' => $board]);
+    }
+
+    public function update(Board $board, Request $request) {
+        $inputs = $request->validate([
+            'title'=>'required|max:255',
+        ]);
+        
+        $board->title = $inputs['title'];
+
+        // $this->authorize('update', $project);
+
+        $board->save();
+
+        $request->session()->flash('update-message', 'Post with title "'.$board['title'].'" was updated');
+
+        return back();
+
+        // $request->session()->flash('success', 'Post with title "'.$inputs['title'].'" was created');
+
+        // return redirect()->route('post.index');
+    }
+
     public function destroy(Board $board, Request $request) {
         // $this->authorize('delete', $project);
 

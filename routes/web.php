@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function() {
     Route::patch('/projects/{project}/update', [App\Http\Controllers\ProjectController::class, 'update'])->name('project.update');
 
     Route::post('/project/{project}/boards', [App\Http\Controllers\BoardController::class, 'store'])->name('board.store');
+    Route::get('/board/{board}/edit', [App\Http\Controllers\BoardController::class, 'edit'])->name('board.edit');
+    Route::patch('/board/{board}/update', [App\Http\Controllers\BoardController::class, 'update'])->name('board.update');
     Route::delete('/board/{board}/destroy', [App\Http\Controllers\BoardController::class, 'destroy'])->name('board.destroy');
 
 });

@@ -1,5 +1,14 @@
 <x-master>
     @section('header')
+
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css" rel="stylesheet"> -->
+
+    <!-- Script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Font Awesome JS -->
+
+
     <style>
         .board-item {}
 
@@ -71,7 +80,7 @@
                     </div>
                     <div class="card-tools board-action">
                         <div class="board-edit">
-                            <a href="" class="btn btn-tool" data-bs-toggle="modal" data-bs-target="#edit-board-modal">
+                            <a class="btn btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
                                 <i class="fas fa-pen"></i>
                             </a>
                         </div>
@@ -79,9 +88,9 @@
                         <form action="{{route('board.destroy', $board->id)}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('DELETE')
-                            <a href="#" class="btn btn-tool">
+                            <button class="btn btn-tool">
                                 <i class="fas fa-trash-alt"></i>
-                            </a>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -118,29 +127,24 @@
             </div>
 
             <!-- edit board form modal -->
-    <div class="modal fade" id="edit-board-modal" tabindex="-1" aria-labelledby="editBoardModalLabel" aria-hidden="true">
-        <form action="" method="post" enctype="multipart/form-data">
-            @csrf
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editBoardModalLabel">Edit board "{{$board->title}}"</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" name="title" id="title" aria-describedby="" class="form-control" value="{{$board->title}}">
+            <div class="modal fade" id="edit-board-modal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editBoardModalLabel">Edit board</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <div class="modal-body" id="edit-board-form">
+                            <!-- result go here -->
+                        </div>
+
+                        <!-- <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div> -->
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
         </div>
         @endforeach
     </div>
@@ -169,5 +173,34 @@
         </form>
     </div>
 
+    @endsection
+
+    @section('scripts')
+    <script>
+        $(document).on('click', '#edit-board-btn', function(event) {
+            event.preventDefault();
+            let href = $(this).attr('data-attr');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#edit-board-modal').modal("show");
+                    $('#edit-board-form').html(result).show();
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+    </script>
     @endsection
 </x-master>
