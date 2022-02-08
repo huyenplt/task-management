@@ -30,10 +30,14 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('project.index');
     Route::get('/project/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('project.create');
-    // Route::post('/posts', [App\Http\Controllers\PostController::class, 'store'])->name('post.store');
+    Route::post('/projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('project.store');
     Route::get('/project/{project}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 
-    // Route::get('/posts/{post}/edit', [App\Http\Controllers\PostController::class, 'edit'])->name('post.edit');
+    Route::get('/project/{project}/edit', [App\Http\Controllers\ProjectController::class, 'edit'])->name('project.edit');
     Route::delete('/projects/{project}/destroy', [App\Http\Controllers\ProjectController::class, 'destroy'])->name('project.destroy');
-    // Route::patch('/posts/{post}/update', [App\Http\Controllers\PostController::class, 'update'])->name('post.update');
+    Route::patch('/projects/{project}/update', [App\Http\Controllers\ProjectController::class, 'update'])->name('project.update');
+
+    Route::post('/project/{project}/boards', [App\Http\Controllers\BoardController::class, 'store'])->name('board.store');
+    Route::delete('/board/{board}/destroy', [App\Http\Controllers\BoardController::class, 'destroy'])->name('board.destroy');
+
 });

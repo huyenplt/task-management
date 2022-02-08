@@ -27,19 +27,41 @@ class ProjectController extends Controller
     public function store(Request $request) {
         // $this->authorize('create', Post::class);
 
-        // $inputs = $request->validate([
-        //     'title'=>'required|min:8|max:255',
-        //     'post_image'=>'file',
-        //     'body'=>'required'
-        // ]);
+        $inputs = $request->validate([
+            'title'=>'required|max:255',
+        ]);
+        $inputs['description'] = $request['description'];
+        // dd($inputs);
+        auth()->user()->projects()->create($inputs, ['role'=>'owner']);
 
-        // if($request->post_image) {
-        //     $inputs['post_image'] = $request->post_image->store('images');
-        //     // $user = Auth::user();
-        //     // $user()->posts()->create($inputs);
+        $request->session()->flash('success', 'Project with title "'.$inputs['title'].'" was created');
+
+        return redirect()->route('project.index');
+    }
+
+    public function edit(Project $project) {
+        // $this->authorize('view', $project);
+        // if(auth()->user()->can('view', $post)) {
+
         // }
+        return view('projects.edit', ['project' => $project]);
+    }
 
-        // auth()->user()->posts()->create($inputs);
+    public function update(Project $project, Request $request) {
+        $inputs = $request->validate([
+            'title'=>'required|max:255',
+        ]);
+        
+        $project->title = $inputs['title'];
+        $project->description = $request['description'];
+
+        // $this->authorize('update', $project);
+
+        $project->save();
+
+        $request->session()->flash('update-message', 'Post with title "'.$project['title'].'" was updated');
+
+        return redirect()->route('project.index');
 
         // $request->session()->flash('success', 'Post with title "'.$inputs['title'].'" was created');
 
