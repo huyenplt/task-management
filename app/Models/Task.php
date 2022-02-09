@@ -13,8 +13,16 @@ class Task extends Model
         'title', 
         'description', 
         'order', 
-        'board_id'
+        'board_id',
+        'deadline'
     ];
+
+    protected $dates = ['deadline'];
+
+    // public function getDeadlineAttribute($value) {
+    //     // return asset($value);
+    //     return date_format($value, 'Y-m-d');
+    // }
 
     public function user()
     {

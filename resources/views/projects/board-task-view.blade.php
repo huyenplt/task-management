@@ -6,7 +6,17 @@
     <!-- Script -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet"> -->
+
     <!-- Font Awesome JS -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script> -->
+
+    <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
 
 
     <style>
@@ -65,11 +75,13 @@
     @section('content')
     <div class="project-title d-sm-flex align-items-center justify-content-between mb-4 pb-3">
         <h1 class="h3 mb-0 text-gray-800">{{$project->title}}</h1>
-        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#add-board-modal">
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#add-board-modal">
             <i class="fas fa-plus fa-sm text-white-50"></i>
-            <span class="text-white">Add new board</span>
-        </a>
+            <span>Add new board</span>
+        </button>
     </div>
+
+
     <div class="row">
         @foreach($project->boards as $board)
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 board-item">
@@ -80,9 +92,9 @@
                     </div>
                     <div class="card-tools board-action">
                         <div class="board-edit">
-                            <a class="btn btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
+                            <button class="btn btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
                                 <i class="fas fa-pen"></i>
-                            </a>
+                            </button>
                         </div>
 
                         <form action="{{route('board.destroy', $board->id)}}" method="post" enctype="multipart/form-data">
@@ -97,8 +109,10 @@
                 <div class="card-body pb-1">
                     @foreach($board->tasks as $task)
                     <div class="card card-light card-outline mb-3">
-
                         <div class="card-body">
+                            <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
+                                hihi
+                            </button>
                             <div class="row task-tag">
                                 @foreach($task->tags as $tag)
                                 <div class="col">
@@ -113,40 +127,74 @@
                                     <img style="width: 30px; height:30px" class="img-profile rounded-circle" src="{{$user->avatar}}">
                                 </a>
                                 @endforeach
+                                <a href="" data-toggle="tooltip" data-placement="top" title="Add User In Charge"></a>
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
                 <div class="card-footer d-flex justify-content-center ">
-                    <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" id="create-task-btn" data-bs-target="#create-task-modal" data-attr="{{ route('task.create', $board->id) }}">
                         <i class="fas fa-plus fa-sm text-white-50"></i>
                         <span>Add new task</span>
-                    </a>
-                </div>
-            </div>
+                    </button>
 
-            <!-- edit board form modal -->
-            <div class="modal fade" id="edit-board-modal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editBoardModalLabel">Edit board</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="edit-board-form">
-                            <!-- result go here -->
-                        </div>
-
-                        <!-- <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div> -->
-                    </div>
                 </div>
             </div>
         </div>
         @endforeach
+    </div>
+
+
+    <!-- off canvas - task view details -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" role="document" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Task details</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="task-view">
+            <!-- task view here -->
+        </div>
+    </div>
+    <!-- modal -->
+    <!-- create task form modal -->
+    <div class="modal fade" id="create-task-modal" tabindex="-1" role="dialog" aria-labelledby="crateTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crateTaskModalLabel">Create new task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="create-task-form">
+                    <!-- create task go here -->
+                </div>
+
+                <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- edit board form modal -->
+    <div class="modal fade" id="edit-board-modal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBoardModalLabel">Edit board</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="edit-board-form">
+                    <!-- result go here -->
+                </div>
+
+                <!-- <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div> -->
+            </div>
+        </div>
     </div>
     <!-- create board form modal -->
     <div class="modal fade" id="add-board-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -164,19 +212,67 @@
                             <input type="text" name="title" id="title" aria-describedby="" class="form-control" placeholder="Enter title">
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <!-- <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </form>
     </div>
 
+
+    <!-- <script type="text/javascript">
+        $('.date').datepicker({
+            format: 'mm-dd-yyyy'
+        });
+
+        $(document).ready(function () {
+            $('.date').datepicker({
+                format: "yyyy-mm-dd"
+            });  
+
+        });
+    </script> -->
+
     @endsection
 
     @section('scripts')
+
+
     <script>
+        // display task.create view
+        $(document).on('click', '#create-task-btn', function(event) {
+            event.preventDefault();
+            let href = $(this).attr('data-attr');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#create-task-modal').modal("show");
+                    $('#create-task-form').html(result).show();
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
+//         $('#create-task-modal').on('shown.bs.modal', function (e) {
+//      $('.date').datepicker();
+//      $('.date').css('z-index','1600');
+// });
+
+        // display board.edit view
         $(document).on('click', '#edit-board-btn', function(event) {
             event.preventDefault();
             let href = $(this).attr('data-attr');
@@ -189,6 +285,31 @@
                 success: function(result) {
                     $('#edit-board-modal').modal("show");
                     $('#edit-board-form').html(result).show();
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
+        $(document).on('click', '#view-task-btn', function(event) {
+            event.preventDefault();
+            let href = $(this).attr('data-attr');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    // $('#offcanvasRight').modal("show");
+                    $('#task-view').html(result).show();
                 },
                 complete: function() {
                     $('#loader').hide();
