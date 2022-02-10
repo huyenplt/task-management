@@ -47,7 +47,8 @@ Route::middleware('auth')->group(function() {
     // task
     Route::get('board/{board}/task/create', [App\Http\Controllers\TaskController::class, 'create'])->name('task.create');
     Route::post('board/{board}/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('task.store');
-    Route::get('/task/{task}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('task.edit');
+    Route::get('task/{task}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('task.edit');
+    Route::patch('/task/{task}/update', [App\Http\Controllers\TaskController::class, 'update'])->name('task.update');
     Route::get('/task/{task}', [App\Http\Controllers\TaskController::class, 'index'])->name('task.index');
     Route::delete('/task/{task}/destroy', [App\Http\Controllers\TaskController::class, 'destroy'])->name('task.destroy');
 });

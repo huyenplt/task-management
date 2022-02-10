@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Board;
 use App\Models\Task;
+use App\Models\Project;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -62,6 +63,43 @@ class TaskController extends Controller
     public function edit(Task $task) {
         // $this->authorize('create', Post::class);
         return view('tasks.edit', ['task' => $task]);
+    }
+
+    public function update(Task $task, Request $request) {
+        $inputs = $request->validate([
+            'title'=>'required|max:255',
+        ]);
+
+        if($request->description) {
+            $inputs['description'] = $request['description'];
+        }
+
+        if($request->deadline) {
+            $date = Carbon::createFromFormat('d-m-Y', $request->deadline);
+            $inputs['deadline'] = $date->getTimestamp();
+        }
+
+        $task->update($inputs);
+
+        if($request->tag) {
+            $tag['content'] = $request->tag;
+            $tag['slug'] = Str::of(Str::lower(request('tag')))->slug('-');
+
+            if($request->colorTag) {
+                $tag['color'] = $request->colorTag;
+            }
+
+            $task->tags()->create($tag);
+        }
+        $board = Board::find($task->board_id);
+        // dd($board->project_id);
+
+        // dd($project->boards);
+        // var_dump($task->boards);
+
+        $request->session()->flash('success', 'Project with title "'.$inputs['title'].'" was created');
+
+        return redirect()->route('project.show', $board->project_id);
     }
 
     public function destroy(Task $task, Request $request) {

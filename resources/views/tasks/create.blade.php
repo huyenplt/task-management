@@ -11,12 +11,18 @@
     <div class="form-group">
         <label for="tag">Tag</label>
         <!-- <input type="text" name="tag" id="tag" aria-describedby="" class="form-control" placeholder="Enter tag"> -->
-        <input type="text" name="tag" id="tag" list="cityname" class="form-control" placeholder="Enter tag">
-<datalist id="cityname">
-    <option value="Blida">
-    <option value="OuledSlama">
-</datalist>
-        <input type="text" name="colorTag" id="colorTag" class="form-control colorpicker" placeholder="Choose color tag">
+        <div class="tag-input d-flex">
+            <div class="tag-content">
+                <input type="text" name="tag" id="tag" list="cityname" class="form-control" placeholder="Enter tag">
+                <datalist id="cityname">
+                    <option value="Blida">
+                    <option value="OuledSlama">
+                </datalist>
+            </div>
+            <div class="tag-color">
+                <input type="text" name="colorTag" id="colorTag" class="form-control colorpicker" placeholder="Choose color tag">
+            </div>
+        </div>
     </div>
 
     <div class="form-group">

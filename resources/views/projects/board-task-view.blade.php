@@ -155,10 +155,10 @@
                                     </button>
                                 </form>
 
-                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" id="edit-task-btn" data-bs-target="#edit-task-modal" data-attr="{{ route('task.edit', $task->id) }}">
+                                <a href="{{ route('task.edit', $task->id) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                                     <i class="fas fa-plus fa-sm text-white-50"></i>
-                                    <span>edit task</span>
-                                </button>
+                                    <span>Edit task</span>
+                                </a>
                             </div>
                         </div>
                     </div>
