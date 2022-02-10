@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Board;
 use App\Models\Task;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class TaskController extends Controller
@@ -26,7 +27,15 @@ class TaskController extends Controller
         $inputs = $request->validate([
             'title'=>'required|max:255',
         ]);
-        $inputs['description'] = $request['description'];
+
+        if($request->description) {
+            $inputs['description'] = $request['description'];
+        }
+
+        if($request->deadline) {
+            $date = Carbon::createFromFormat('d-m-Y', $request->deadline);
+            $inputs['deadline'] = $date->getTimestamp();
+        }
 
         $board->tasks()->create($inputs);
 
@@ -36,19 +45,31 @@ class TaskController extends Controller
             $tag['content'] = $request->tag;
             $tag['slug'] = Str::of(Str::lower(request('tag')))->slug('-');
 
+            if($request->colorTag) {
+                $tag['color'] = $request->colorTag;
+            }
+
             $task->tags()->create($tag);
         }
 
-
-
-        // $permission->slug = Str::of(Str::lower(request('name')))->slug('-');
-        // dd($inputs);
-        // dd($project->id);
-
-        // $project->boards()->create($inputs);
+        // dd($request);
 
         $request->session()->flash('success', 'Project with title "'.$inputs['title'].'" was created');
 
+        return back();
+    }
+
+    public function edit(Task $task) {
+        // $this->authorize('create', Post::class);
+        return view('tasks.edit', ['task' => $task]);
+    }
+
+    public function destroy(Task $task, Request $request) {
+        // $this->authorize('delete', $project);
+
+        $task->delete();
+        // $board->tasks()->delete();
+        $request->session()->flash('message', 'project was deleted');
         return back();
     }
 }

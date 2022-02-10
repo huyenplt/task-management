@@ -62,7 +62,7 @@ class BoardController extends Controller
         // $this->authorize('delete', $project);
 
         $board->delete();
-        // $board->tasks()->delete();
+        $board->tasks()->delete();
         $request->session()->flash('message', 'project was deleted');
         return back();
     }

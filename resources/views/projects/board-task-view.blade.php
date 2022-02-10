@@ -70,6 +70,14 @@
         .project-title {
             border-bottom: 1px solid #e3e6f0;
         }
+
+        .view-task-details-btn {
+            justify-content: space-between;
+        }
+
+        .task-deadline span {
+            font-size: 12px;
+        }
     </style>
     @endsection
     @section('content')
@@ -86,9 +94,9 @@
         @foreach($project->boards as $board)
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 board-item">
             <div class="card card-row card-default">
-                <div class="card-header bg-info">
+                <div class="card-header bg-secondary bg-gradient">
                     <div class="board-title">
-                        <h5 class="card-title">{{$board->title}}</h5>
+                        <h5 class="card-title text-white fw-bold">{{$board->title}}</h5>
                     </div>
                     <div class="card-tools board-action">
                         <div class="board-edit">
@@ -110,14 +118,9 @@
                     @foreach($board->tasks as $task)
                     <div class="card card-light card-outline mb-3">
                         <div class="card-body">
-                            <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
-                                hihi
-                            </button>
-                            <div class="row task-tag">
+                            <div class="d-flex task-tag">
                                 @foreach($task->tags as $tag)
-                                <div class="col">
-                                    <button style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
-                                </div>
+                                <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
                                 @endforeach
                             </div>
                             <p>{{ $task->title }}</p>
@@ -128,6 +131,34 @@
                                 </a>
                                 @endforeach
                                 <a href="" data-toggle="tooltip" data-placement="top" title="Add User In Charge"></a>
+                            </div>
+                            <div class="d-flex view-task-details-btn">
+                                <div class="task-deadline">
+                                    @if($task->deadline)
+                                    <i class="fas fa-sm fa-calendar-alt"></i>
+                                    <span>{{ $task->deadline->format('M d, Y') }}</span>
+                                    @endif
+                                </div>
+                                <div class="task-action">
+
+                                </div>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
+                                    <span class="text-sm">View more</span>
+                                    <i class="fas fa-sm fa-arrow-right"></i>
+                                </button>
+
+                                <form action="{{route('task.destroy', $task->id)}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-tool">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" id="edit-task-btn" data-bs-target="#edit-task-modal" data-attr="{{ route('task.edit', $task->id) }}">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i>
+                                    <span>edit task</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -158,14 +189,34 @@
     </div>
     <!-- modal -->
     <!-- create task form modal -->
-    <div class="modal fade" id="create-task-modal" tabindex="-1" role="dialog" aria-labelledby="crateTaskModalLabel" aria-hidden="true">
+    <div class="modal fade" id="create-task-modal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="crateTaskModalLabel">Create new task</h5>
+                    <h5 class="modal-title" id="createTaskModalLabel">Create new task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="create-task-form">
+                    <!-- create task go here -->
+                </div>
+
+                <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- edit task form modal -->
+    <div class="modal fade" id="edit-task-modal" tabindex="-1" role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTaskModalLabel">Create new task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="edit-task-form">
                     <!-- create task go here -->
                 </div>
 
@@ -241,7 +292,7 @@
 
 
     <script>
-        // display task.create view
+        // display tasks.create view
         $(document).on('click', '#create-task-btn', function(event) {
             event.preventDefault();
             let href = $(this).attr('data-attr');
@@ -267,10 +318,36 @@
             })
         });
 
-//         $('#create-task-modal').on('shown.bs.modal', function (e) {
-//      $('.date').datepicker();
-//      $('.date').css('z-index','1600');
-// });
+        // display tasks.edit view
+        $(document).on('click', '#edit-task-btn', function(event) {
+            event.preventDefault();
+            let href = $(this).attr('data-attr');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#edit-task-modal').modal("show");
+                    $('#edit-task-form').html(result).show();
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
+        //         $('#create-task-modal').on('shown.bs.modal', function (e) {
+        //      $('.date').datepicker();
+        //      $('.date').css('z-index','1600');
+        // });
 
         // display board.edit view
         $(document).on('click', '#edit-board-btn', function(event) {

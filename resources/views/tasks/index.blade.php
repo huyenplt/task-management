@@ -19,31 +19,16 @@
         <label class="col-3" for="">Tags:</label>
         <div class="col-7 text-gray-dark">
             @foreach($task->tags as $tag)
-                {{$tag->content}},
+            {{$tag->content}},
             @endforeach
         </div>
     </div>
     @if($task->deadline)
-    {{$task->deadline->format('Y.m.d')}}
-    @endif
-</div>
-
-<div class="form-group">
-        <label>Date:</label>
-        <div class="input-group date" id="reservationdate" data-target-input="nearest">
-            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
+    <div class="row deadline task-details-item">
+        <label class="col-3">Deadline:</label>
+        <div class="col-7">
+            {{$task->deadline->format('M d, Y')}}
         </div>
     </div>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script> -->
-
-    <script type="text/javascript">
-        
-
-        $('#reservationdate').datetimepicker({
-        format: 'L'
-    });
-    </script>
+    @endif
+</div>
