@@ -78,7 +78,8 @@ class TaskController extends Controller
 
     public function edit(Task $task) {
         // $this->authorize('create', Post::class);
-        return view('tasks.edit', ['task' => $task]);
+        $tags = Tag::all();
+        return view('tasks.edit', ['task' => $task, 'tags' => $tags]);
     }
 
     public function update(Task $task, Request $request) {

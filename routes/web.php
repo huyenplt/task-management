@@ -51,4 +51,7 @@ Route::middleware('auth')->group(function() {
     Route::patch('/task/{task}/update', [App\Http\Controllers\TaskController::class, 'update'])->name('task.update');
     Route::get('/task/{task}', [App\Http\Controllers\TaskController::class, 'index'])->name('task.index');
     Route::delete('/task/{task}/destroy', [App\Http\Controllers\TaskController::class, 'destroy'])->name('task.destroy');
+
+    // tag
+    Route::delete('/tag/{tag}/destroy', [App\Http\Controllers\TagController::class, 'destroy'])->name('tag.destroy');
 });

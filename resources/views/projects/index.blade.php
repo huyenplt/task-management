@@ -16,7 +16,6 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Title</th>
                             <th>Description</th>
                             <th>Role on Project</th>
@@ -26,7 +25,6 @@
                         </tr>
                     </thead>
                     <tfoot>
-                        <th>Id</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Role on Project</th>
@@ -37,7 +35,6 @@
                     <tbody>
                         @foreach($projects as $project)
                         <tr>
-                            <td>{{$project->id}}</td>
                             <td>{{$project->title}}</td>
                             <td>{{$project->description}}</td>
                             <td>{{$project->pivot->role}}</td>

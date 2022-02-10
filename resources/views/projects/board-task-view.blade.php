@@ -78,6 +78,10 @@
         .task-deadline span {
             font-size: 12px;
         }
+
+        .add-task-btn {
+            width: 100%;
+        }
     </style>
     @endsection
     @section('content')
@@ -123,8 +127,8 @@
                                 <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
                                 @endforeach
                             </div>
-                            <p>{{ $task->title }}</p>
-                            <div class="user-in-charge">
+                            <h5 class="task-title text-gray-800">{{ $task->title }}</h5>
+                            <div class="user-in-charge mb-2">
                                 @foreach($task->users as $user)
                                 <a data-toggle="tooltip" data-placement="top" title="{{$user->name}}" href="{{route('user.profile.show', $user)}}">
                                     <img style="width: 30px; height:30px" class="img-profile rounded-circle" src="{{$user->avatar}}">
@@ -139,33 +143,36 @@
                                     <span>{{ $task->deadline->format('M d, Y') }}</span>
                                     @endif
                                 </div>
-                                <div class="task-action">
-
+                                <div class="task-action d-flex">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-fw fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="{{ route('task.edit', $task->id) }}">Edit Task</a></li>
+                                        <li>
+                                            <form action="{{route('task.destroy', $task->id)}}" method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="dropdown-item">Delete Task</button>
+                                            </form>
+                                        </li>
+                                    </ul>
                                 </div>
+
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
                                     <span class="text-sm">View more</span>
                                     <i class="fas fa-sm fa-arrow-right"></i>
                                 </button>
+                                </div>
 
-                                <form action="{{route('task.destroy', $task->id)}}" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-tool">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-
-                                <a href="{{ route('task.edit', $task->id) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                                    <i class="fas fa-plus fa-sm text-white-50"></i>
-                                    <span>Edit task</span>
-                                </a>
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
                 <div class="card-footer d-flex justify-content-center ">
-                    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" id="create-task-btn" data-bs-target="#create-task-modal" data-attr="{{ route('task.create', $board->id) }}">
+                    <button class="add-task-btn d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" id="create-task-btn" data-bs-target="#create-task-modal" data-attr="{{ route('task.create', $board->id) }}">
                         <i class="fas fa-plus fa-sm text-white-50"></i>
                         <span>Add new task</span>
                     </button>
@@ -175,7 +182,6 @@
         </div>
         @endforeach
     </div>
-
 
     <!-- off canvas - task view details -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" role="document" aria-labelledby="offcanvasRightLabel">
