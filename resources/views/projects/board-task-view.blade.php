@@ -263,10 +263,10 @@
                             <input type="text" name="title" id="title" aria-describedby="" class="form-control" placeholder="Enter title">
                         </div>
                     </div>
-                    <!-- <div class="modal-footer">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </form>
@@ -305,6 +305,15 @@
                 success: function(result) {
                     $('#create-task-modal').modal("show");
                     $('#create-task-form').html(result).show();
+
+                    if (result.errors) {
+                        $('.alert-danger').html('');
+
+                        $.each(result.errors, function(key, value) {
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>' + value + '</li>');
+                        });
+                    }
                 },
                 complete: function() {
                     $('#loader').hide();

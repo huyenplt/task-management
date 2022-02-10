@@ -59,4 +59,12 @@ class User extends Authenticatable
     public function tasks() {
         return $this->belongsToMany(Task::class);
     }
+
+    public function userInProject($project) {
+        foreach($this->projects as $curProject) {
+            if($curProject->id == $project->id)
+                return true;
+        }
+        return false;
+    }
 }
