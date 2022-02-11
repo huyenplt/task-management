@@ -72,6 +72,13 @@ class User extends Authenticatable
         return false;
     }
 
-    
+    public function countTaskDone() {
+        $count = 0;
+        foreach ($this->tasks as $task) {
+            if($task->status == 1) 
+                $count = $count+1;
+        }
+        return $count;
+    }
 
 }
