@@ -7,7 +7,7 @@
     <div class="row mb-3 person-in-charge task-details-item">
         <label class="col-3" for="">Users in charge:</label>
         <div class="col-6">
-            @foreach($task->users as $user)
+            @foreach($task->users->orderBy('$task->deadline') as $user)
             <a data-toggle="tooltip" data-placement="top" title="{{$user->name}}" href="{{route('user.profile.show', $user)}}">
                 <img style="width: 30px; height:30px" class="img-profile rounded-circle" src="{{$user->avatar}}">
                 {{$user->name}}</br>

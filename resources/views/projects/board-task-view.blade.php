@@ -31,13 +31,13 @@
             margin-bottom: 0;
         }
 
-        .fa-pen {
+        /* .fa-pen {
             color: #1cc88a;
         }
 
         .fa-trash-alt {
             color: red;
-        }
+        } */
 
         .board-action {
             display: flex;
@@ -97,6 +97,18 @@
         </button>
     </div>
 
+    @if (session('message-not-user'))
+        <div class="alert alert-danger">
+            {{ session('message-not-user') }}
+        </div>
+    @endif
+
+    @if (session('task-create-success'))
+        <div class="alert alert-success">
+            {{ session('task-create-success') }}
+        </div>
+    @endif
+
 
     <div class="row">
         @foreach($project->boards as $board)
@@ -104,21 +116,21 @@
             <div class="card card-row card-default">
                 <div class="card-header bg-secondary bg-gradient">
                     <div class="board-title">
-                        <h4 class="card-title text-white fw">{{$board->title}}</h4>
+                        <h5 class="card-title text-white fw">{{$board->title}}({{count($board->tasks)}})</h5>
                     </div>
                     @if($project->getOwner()->email == auth()->user()->email )
                     <div class="card-tools board-action">
                         <div class="board-edit">
-                            <button class="btn btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
-                                <i class="fas fa-pen"></i>
+                            <button class="btn btn-sm btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
+                                <i class="fas fa-sm fa-pen"></i>
                             </button>
                         </div>
 
                         <form action="{{route('board.destroy', $board->id)}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-tool">
-                                <i class="fas fa-trash-alt"></i>
+                            <button class="btn btn-tool btn-sm">
+                                <i class="fas fa-sm fa-trash-alt bg-default"></i>
                             </button>
                         </form>
                     </div>
@@ -132,7 +144,7 @@
                         <div class="card-body">
                             <div class="d-flex task-tag">
                                 @foreach($task->tags as $tag)
-                                <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
+                                <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px; color:white" type="button">{{ $tag->content }}</button>
                                 @endforeach
                             </div>
                             <div>
@@ -144,10 +156,12 @@
                                     @endif
                         <form action="{{route('task.statusUpdate', $task->id)}}" method="post" enctype="multipart/form-data">
 @csrf
-@method('PATCH')
+@method('PATCH')                    @if($task->status == 0)
                                     <button class="btn btn-success btn-sm" type="submit">
-                                    CHECK DONE
+                                        CHECK DONE
                                     </button>
+                                    @endif
+
                         </form>
 
                                 </div>

@@ -26,6 +26,26 @@
                 </div>
             </div>
         </div>
+        <div class="d-flex justify-content-center">
+            <div class="row" style="justify-content: space-between;">
+                <div class="col-3 ">
+                    <form action="{{route('project.index')}}">
+                        <div class="card card-row card-default" style="height:200px; border:none; background:#F8F9FC">
+                            <button class="btn btn-info" style="width:300px; margin-left:-100px; margin-top:60px">VIEW ALL YOUR PROJECT</button>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="col-3 ">
+                    <form action="{{route('task.showall')}}">
+                        <div class="card card-row card-default" style="height:200px; border:none; background:#F8F9FC">
+                            <button class="btn btn-info" style="width:300px; margin-right:360px;  margin-top:60px">VIEW ALL YOUR TASK</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
     @endsection
 </x-master>

@@ -36,7 +36,7 @@ class ProjectController extends Controller
         ]);
         $inputs['description'] = $request['description'];
         // dd($inputs);
-        auth()->user()->projects()->create($inputs, ['role'=>'owner']);
+        auth()->user()->projects()->create($inputs, ['role'=>'Owner']);
 
         $request->session()->flash('success', 'Project with title "'.$inputs['title'].'" was created');
 
