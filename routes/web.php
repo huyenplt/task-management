@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/project/{project}/edit', [App\Http\Controllers\ProjectController::class, 'edit'])->name('project.edit');
     Route::delete('/projects/{project}/destroy', [App\Http\Controllers\ProjectController::class, 'destroy'])->name('project.destroy');
     Route::patch('/projects/{project}/update', [App\Http\Controllers\ProjectController::class, 'update'])->name('project.update');
+    Route::get('/project/{project}/settings', [App\Http\Controllers\ProjectController::class, 'settings'])->name('project.settings');
 
     // board 
     Route::post('/project/{project}/boards', [App\Http\Controllers\BoardController::class, 'store'])->name('board.store');
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function() {
     Route::patch('/task/{task}/update', [App\Http\Controllers\TaskController::class, 'update'])->name('task.update');
     Route::get('/task/{task}', [App\Http\Controllers\TaskController::class, 'index'])->name('task.index');
     Route::delete('/task/{task}/destroy', [App\Http\Controllers\TaskController::class, 'destroy'])->name('task.destroy');
+    Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'showall'])->name('task.showall');
+    Route::patch('/tasks/{task}/statusUpdate', [App\Http\Controllers\TaskController::class, 'statusUpdate'])->name('task.statusUpdate');
+
 
     // tag
     Route::delete('/tag/{tag}/destroy', [App\Http\Controllers\TagController::class, 'destroy'])->name('tag.destroy');

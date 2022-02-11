@@ -13,6 +13,7 @@ class Task extends Model
         'title', 
         'description', 
         'order', 
+        'status',
         'board_id',
         'deadline'
     ];

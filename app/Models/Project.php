@@ -19,4 +19,12 @@ class Project extends Model
     {
         return $this->hasMany(Board::class)->orderBy('order');
     }
+
+
+    public function getOwner() {
+        foreach($this->users as $user) {
+            if($user->pivot['role'] == 'Owner') 
+                return $user;
+        }
+    }
 }

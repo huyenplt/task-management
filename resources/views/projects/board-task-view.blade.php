@@ -82,6 +82,10 @@
         .add-task-btn {
             width: 100%;
         }
+
+        .task-checkbox {
+            justify-content: space-between;
+        }
     </style>
     @endsection
     @section('content')
@@ -100,8 +104,9 @@
             <div class="card card-row card-default">
                 <div class="card-header bg-secondary bg-gradient">
                     <div class="board-title">
-                        <h5 class="card-title text-white fw-bold">{{$board->title}}</h5>
+                        <h4 class="card-title text-white fw">{{$board->title}}</h4>
                     </div>
+                    @if($project->getOwner()->email == auth()->user()->email )
                     <div class="card-tools board-action">
                         <div class="board-edit">
                             <button class="btn btn-tool" data-bs-toggle="modal" id="edit-board-btn" data-bs-target="#edit-board-modal" data-attr="{{ route('board.edit', $board->id) }}">
@@ -117,9 +122,12 @@
                             </button>
                         </form>
                     </div>
+                    @endif
+                    
+                    
                 </div>
                 <div class="card-body pb-1">
-                    @foreach($board->tasks as $task)
+                    @foreach($board->tasks->sortBy('order') as $task)
                     <div class="card card-light card-outline mb-3">
                         <div class="card-body">
                             <div class="d-flex task-tag">
@@ -127,7 +135,23 @@
                                 <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
                                 @endforeach
                             </div>
-                            <h5 class="task-title text-gray-800">{{ $task->title }}</h5>
+                            <div>
+                                <div class="d-flex task-checkbox">
+                                    @if($task->status == 1)
+                                    <h5 style="text-decoration: line-through" class="task-title text-gray-800">{{ $task->title }}</h5>
+                                    @else
+                                    <h5 class="task-title text-gray-800">{{ $task->title }}</h5>
+                                    @endif
+                        <form action="{{route('task.statusUpdate', $task->id)}}" method="post" enctype="multipart/form-data">
+@csrf
+@method('PATCH')
+                                    <button class="btn btn-success btn-sm" type="submit">
+                                    CHECK DONE
+                                    </button>
+                        </form>
+
+                                </div>
+                            </div>
                             <div class="user-in-charge mb-2">
                                 @foreach($task->users as $user)
                                 <a data-toggle="tooltip" data-placement="top" title="{{$user->name}}" href="{{route('user.profile.show', $user)}}">
@@ -144,26 +168,26 @@
                                     @endif
                                 </div>
                                 <div class="task-action d-flex">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-fw fa-cog"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="{{ route('task.edit', $task->id) }}">Edit Task</a></li>
-                                        <li>
-                                            <form action="{{route('task.destroy', $task->id)}}" method="post" enctype="multipart/form-data">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="dropdown-item">Delete Task</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-fw fa-cog"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" href="{{ route('task.edit', $task->id) }}">Edit Task</a></li>
+                                            <li>
+                                                <form action="{{route('task.destroy', $task->id)}}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="dropdown-item">Delete Task</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
-                                    <span class="text-sm">View more</span>
-                                    <i class="fas fa-sm fa-arrow-right"></i>
-                                </button>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" id="view-task-btn" data-attr="{{ route('task.index', $task->id) }}">
+                                        <span class="text-sm">View more</span>
+                                        <i class="fas fa-sm fa-arrow-right"></i>
+                                    </button>
                                 </div>
 
                             </div>

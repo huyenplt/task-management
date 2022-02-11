@@ -21,17 +21,9 @@
                             <th>Role on Project</th>
                             <th>Created At</th>
                             <th>Updated At</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Role on Project</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
-                        <th>Action</th>
-                    </tfoot>
                     <tbody>
                         @foreach($projects as $project)
                         <tr>
@@ -40,14 +32,23 @@
                             <td>{{$project->pivot->role}}</td>
                             <td>{{$project->created_at->diffForHumans()}}</td>
                             <td>{{$project->updated_at->diffForHumans()}}</td>
-                            <td>
-                                <a href="{{route('project.show', $project->id)}}" class="btn btn-primary">Show</a>
-                                <a href="{{route('project.edit', $project->id)}}" class="btn btn-success">Edit</a>
+                            <td class="d-flex">
+                                <a href="{{route('project.show', $project->id)}}" class="btn btn-primary mr-2">
+                                <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{route('project.edit', $project->id)}}" class="btn btn-success mr-2">
+                                <i class="fas fa-pen"></i>
+                                </a>
                                 <form action="{{route('project.destroy', $project->id)}}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger mr-2">
+                                    <i class="fas fa-trash"></i>
+                                    </button>
                                 </form>
+                                <a href="{{route('project.settings', $project->id)}}" class="btn btn-primary">
+                                <i class="fas fa-users"></i>
+                                </a>
                             </td>
                         </tr>
                         @endforeach

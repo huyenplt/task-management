@@ -19,6 +19,10 @@ class ProjectController extends Controller
         return view('projects.board-task-view', ['project' => $project]);
     }
 
+    public function settings(Project $project) {
+        return view('projects.settings', ['project' => $project]);
+    }
+
     public function create() {
         // $this->authorize('create', Post::class);
         return view('projects.create');

@@ -47,24 +47,31 @@ class User extends Authenticatable
     //     $this->attributes['password'] = bcrypt($value);
     // }
 
-    public function getAvatarAttribute($value) {
+    public function getAvatarAttribute($value)
+    {
         // return asset($value);
         return asset('storage/' . $value);
     }
 
-    public function projects() {
+    public function projects()
+    {
         return $this->belongsToMany(Project::class)->withPivot('role');
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->belongsToMany(Task::class);
     }
 
-    public function userInProject($project) {
-        foreach($this->projects as $curProject) {
-            if($curProject->id == $project->id)
+    public function userInProject($project)
+    {
+        foreach ($this->projects as $curProject) {
+            if ($curProject->id == $project->id)
                 return true;
         }
         return false;
     }
+
+    
+
 }

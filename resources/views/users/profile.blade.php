@@ -1,8 +1,8 @@
 <x-master>
     @section('content')
-        <h1>{{ $user->name }}</h1>
+    <h1>{{ $user->name }}'s profile page</h1>
 
-        <div class="row">
+    <div class="row">
         <div class="col-sm-6">
             <form action="{{ route('user.profile.update', $user) }}" method="post" enctype="multipart/form-data">
                 @csrf
@@ -15,72 +15,57 @@
                 </div>
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input 
-                        type="text" 
-                        name="name" 
-                        class="
+                    @if(auth()->user()->email == $user->email)
+                    <input type="text" name="name" class="
                             form-control
                             @error('name') 
                                 is-invalid 
                             @enderror
-                            " 
-                        id="name" 
-                        aria-describedby=""
-                        value="{{$user->name}}">
+                            " id="name" aria-describedby="" value="{{$user->name}}">
 
                     @error('name')
-                        <div class="invalid-feedback">{{$message}}</div>
+                    <div class="invalid-feedback">{{$message}}</div>
                     @enderror
+                    @else
+                    <input disabled style="color:black" type="text" name="name" class="
+                            form-control
+                            @error('name') 
+                                is-invalid 
+                            @enderror
+                            " id="name" aria-describedby="" value="{{$user->name}}">
+                    @endif
+
+
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input 
-                        type="text" 
-                        name="email" 
-                        class="
+                    @if(auth()->user()->email == $user->email)
+                    <input type="text" name="email" class="
                             form-control
                             @error('email') 
                                 is-invalid 
                             @enderror
-                        " 
-                        id="email" 
-                        aria-describedby=""
-                        value="{{$user->email}}"
-                    >
+                        " id="email" aria-describedby="" value="{{$user->email}}">
 
                     @error('email')
-                        <div class="invalid-feedback">{{$message}}</div>
+                    <div class="invalid-feedback">{{$message}}</div>
                     @enderror
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        class="
-                            form-control
-                            @error('password') 
+                    @else
+                    <input disabled style="color:black" type="text" name="name" class="
+                    form-control
+                            @error('email') 
                                 is-invalid 
                             @enderror
-                        " 
-                        id="password" 
-                        aria-describedby="">
-                    @error('password')
-                        <div class="invalid-feedback">{{$message}}</div>
-                    @enderror
+                        " id="email" aria-describedby="" value="{{$user->email}}">
+                    @endif
                 </div>
-                <div class="form-group">
-                    <label for="password_confirmation">Comfirm Password</label>
-                    <input 
-                        type="password" 
-                        name="password_confirmation" 
-                        class="form-control" 
-                        id="password_confirmation" 
-                        aria-describedby="">
-                </div>
+                @if(auth()->user()->email == $user->email)
                 <button type="submit" class="btn btn-primary">
                     Submit
                 </button>
+                @else
+                <a href="{{url()->previous()}}" class="btn btn-primary">Back</a>
+                @endif
             </form>
         </div>
     </div>

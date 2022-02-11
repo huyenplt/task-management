@@ -28,12 +28,35 @@
         @method('PATCH')
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" name="title" id="title" aria-describedby="" class="form-control" value="{{$task->title}}">
+            <input type="text" name="title" id="title" aria-describedby="" class="
+            form-control
+            @error('title') 
+                is-invalid 
+            @enderror
+            " value="{{$task->title}}">
+        @error('title')
+        <div class="invalid-feedback">{{$message}}</div>
+        @enderror
         </div>
         <div class="form-group">
             <label for="description">Description</label>
             <textarea name="description" class="form-control" id="description" cols="30" rows="10">{{$task->description}}</textarea>
         </div>
+
+        <div class="form-group">
+            <label for="userInCharge">User in charge</label>
+            <div>
+                @foreach($task->users as $user)
+
+                <a data-toggle="tooltip" data-placement="top" title="{{$user->name}}" href="{{route('user.profile.show', $user)}}">
+                    <img style="width: 30px; height:30px" class="img-profile rounded-circle mr-15" src="{{$user->avatar}}">
+                    {{$user->name}}
+                </a>
+                @endforeach
+            </div>
+
+        </div>
+
         <div class="form-group">
             <label for="tag">Tag</label>
             <!-- <input type="text" name="tag" id="tag" aria-describedby="" class="form-control" placeholder="Enter tag"> -->
@@ -41,25 +64,12 @@
                 <div class="d-flex task-tag">
                     @foreach($task->tags as $tag)
                     <a href="{{route('tag.destroy', $tag->id)}}">
-                        <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }} x</button>
+                        <button class="mr-1" style="background-color: {{$tag->color}}; font-size:12px" type="button">{{ $tag->content }}</button>
                     </a>
                     @endforeach
                 </div>
             </div>
-            <div class="tag-input d-flex">
-                <div class="tag-content">
-                    <input type="text" name="tag" id="tag" list="cityname" class="form-control" placeholder="Add tag">
-                    <datalist id="cityname">
-                        @foreach($tags as $tag)
-                        <option value="{{$tag->content}}">
-                            <!-- <option value="OuledSlama"> -->
-                            @endforeach
-                    </datalist>
-                </div>
-                <div class="tag-color">
-                    <input type="text" name="colorTag" id="colorTag" class="form-control colorpicker" placeholder="Choose color tag">
-                </div>
-            </div>
+
         </div>
 
         <div class="form-group">
@@ -80,8 +90,8 @@
         @csrf
         @method('PATCH')
         <div class="text-center">
-            <a class="btn btn-primary" href="" data-dismiss="modal"> Cancel</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="btn btn-primary" href="{{url()->previous()}}" data-dismiss="modal"> Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
         </div>
 
     </form>

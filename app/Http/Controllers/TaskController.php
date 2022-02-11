@@ -15,6 +15,14 @@ use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {   
+    public function showall() {
+        $user = auth()->user();
+        $tasks = $user->tasks()->paginate(5);
+        
+        // $projects = Project::all();
+        return view('tasks.showall', ['tasks'=>$tasks]);
+    }
+
     public function index(Task $task) {
         // $this->authorize('create', Post::class);
         return view('tasks.index', ['task' => $task]);
@@ -52,7 +60,7 @@ class TaskController extends Controller
             $project = Project::find($board->project_id);
             
             if(!$user->userInProject($project)) {
-                $project->users()->attach($user, ['role'=>'member']);
+                $project->users()->attach($user, ['role'=>'Member']);
             }
         }
 
@@ -84,7 +92,7 @@ class TaskController extends Controller
 
     public function update(Task $task, Request $request) {
         $inputs = $request->validate([
-            'title'=>'required|max:255',
+            'title'=>['required', 'string', 'max:255'],
         ]);
         
 
@@ -126,6 +134,14 @@ class TaskController extends Controller
         $task->delete();
         // $board->tasks()->delete();
         $request->session()->flash('message', 'project was deleted');
+        return back();
+    }
+
+    public function statusUpdate(Task $task) {
+
+        // $task->status = 1;
+        $task->update(['status'=>1, 'order'=>1]);
+
         return back();
     }
 }
